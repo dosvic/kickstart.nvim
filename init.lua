@@ -652,7 +652,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
-        'black', -- Used to format python code
+        'ruff', -- Used to format python code
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -691,11 +691,11 @@ require('lazy').setup({
     config = function()
       -- List of available models
       local models = {
-        ['llama-3.1-405b:free'] = 'meta-llama/llama-3.1-405b-instruct:free',
+        ['llama-3.1-70b:free'] = 'meta-llama/llama-3.1-70b-instruct:free',
         ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet:beta',
         ['qwen-2.5-coder-32b'] = 'qwen/qwen-2.5-coder-32b-instruct',
       }
-      local default_model = 'qwen/qwen-2.5-coder-32b-instruct'
+      local default_model = 'meta-llama/llama-3.1-70b-instruct:free'
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
