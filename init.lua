@@ -688,14 +688,59 @@ require('lazy').setup({
     event = 'VeryLazy',
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
-    opts = {
-      -- add any opts here
-      provider = 'openai',
-      openai = {
-        endpoint = 'https://openrouter.ai/api/v1',
-        model = 'meta-llama/llama-3.1-70b-instruct:free',
-      },
-    },
+    config = function()
+      -- List of available models
+      local models = {
+        ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet:beta',
+        ['llama-3.1-405b:free'] = 'meta-llama/llama-3.1-405b-instruct:free',
+      }
+      local default_model = models['llama-3.1-405b:free']
+
+      -- Create command to switch models
+      vim.api.nvim_create_user_command('AvanteModel', function(opts)
+        if opts.args == '' then
+          -- Show available models if no argument provided
+          local model_names = {}
+          for name, _ in pairs(models) do
+            table.insert(model_names, name)
+          end
+          print('Available models: ' .. table.concat(model_names, ', '))
+          return
+        end
+
+        local model_id = models[opts.args]
+        if model_id then
+          require('avante').setup {
+            provider = 'openai',
+            openai = {
+              endpoint = 'https://openrouter.ai/api/v1',
+              model = model_id,
+            },
+          }
+          print('Switched to model: ' .. model_id)
+        else
+          print 'Invalid model name. Use :AvanteModel to see available models.'
+        end
+      end, {
+        nargs = '?',
+        complete = function()
+          local model_names = {}
+          for name, _ in pairs(models) do
+            table.insert(model_names, name)
+          end
+          return model_names
+        end,
+      })
+
+      -- Initial setup with default model
+      require('avante').setup {
+        provider = 'openai',
+        openai = {
+          endpoint = 'https://openrouter.ai/api/v1',
+          model = default_model,
+        },
+      }
+    end,
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
     build = 'make',
     -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
