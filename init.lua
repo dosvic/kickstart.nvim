@@ -691,10 +691,11 @@ require('lazy').setup({
     config = function()
       -- List of available models
       local models = {
-        ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet:beta',
         ['llama-3.1-405b:free'] = 'meta-llama/llama-3.1-405b-instruct:free',
+        ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet:beta',
+        ['qwen-2.5-coder-32b'] = 'qwen/qwen-2.5-coder-32b-instruct',
       }
-      local default_model = models['llama-3.1-405b:free']
+      local default_model = 'qwen/qwen-2.5-coder-32b-instruct'
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
