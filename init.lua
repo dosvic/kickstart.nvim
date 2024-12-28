@@ -698,8 +698,9 @@ require('lazy').setup({
         ['llama-3.1-70b:free'] = 'meta-llama/llama-3.1-70b-instruct:free',
         ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet:beta',
         ['qwen-2.5-coder-32b'] = 'qwen/qwen-2.5-coder-32b-instruct',
+        ['deepseek'] = 'deepseek/deepseek-chat',
       }
-      local default_model = 'meta-llama/llama-3.1-70b-instruct:free'
+      local default_model = 'deepseek/deepseek-chat'
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
