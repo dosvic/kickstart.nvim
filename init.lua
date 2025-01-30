@@ -666,7 +666,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
-            -- Skip jdtls setup as it's handled separately
+            -- Skip jdtls setup as it's handled separately by nvim-jdtls
             if server_name == 'jdtls' then
               return
             end
@@ -815,10 +815,15 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        python = { 'black' },
+        python = { 'ruff' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+
+        java = {
+          'java-debug-adapter',
+          'java-test',
+        },
       },
     },
   },
