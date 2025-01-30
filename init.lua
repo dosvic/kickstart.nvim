@@ -700,7 +700,9 @@ require('lazy').setup({
         ['llama-3.1-70b:free'] = 'meta-llama/llama-3.1-70b-instruct:free',
         ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet:beta',
         ['qwen-2.5-coder-32b'] = 'qwen/qwen-2.5-coder-32b-instruct',
-        ['deepseek'] = 'deepseek/deepseek-chat',
+        ['deepseek-v3'] = 'deepseek/deepseek-chat',
+        ['deepseek-r1'] = 'deepseek/deepseek-r1',
+        ['deepseek-r1-free'] = 'deepseek/deepseek-r1:free',
       }
       local default_model = 'deepseek/deepseek-chat'
 
