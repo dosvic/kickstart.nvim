@@ -660,6 +660,8 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'ruff', -- Used to format python code
+        'java-test',
+        'java-debug-adapter',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -819,11 +821,6 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
-
-        java = {
-          'java-debug-adapter',
-          'java-test',
-        },
       },
     },
   },
