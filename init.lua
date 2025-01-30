@@ -466,7 +466,6 @@ require('lazy').setup({
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
-      'nvim-java/nvim-java',
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -643,6 +642,8 @@ require('lazy').setup({
             },
           },
         },
+
+        jdtls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -665,25 +666,17 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         handlers = {
           function(server_name)
+            -- Skip jdtls setup as it's handled separately
+            if server_name == 'jdtls' then
+              return
+            end
+
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
-          end,
-          jdtls = function()
-            -- you have to run :lua require("java").setup() on first run
-            require('java').setup {
-              -- Your custom jdtls settings goes here
-              jdk = {
-                auto_install = false,
-              },
-            }
-
-            require('lspconfig').jdtls.setup {
-              -- Your custom nvim-java configuration goes here
-            }
           end,
         },
       }
@@ -1045,6 +1038,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.java',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
