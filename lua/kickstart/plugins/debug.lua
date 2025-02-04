@@ -98,6 +98,14 @@ return {
       },
     }
 
+    dap.configurations.java = {
+      {
+        type = 'java',
+        request = 'launch',
+        name = 'Launch Java Program',
+      },
+    }
+
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
     dapui.setup {

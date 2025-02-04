@@ -1,4 +1,5 @@
 --https://ptrtojoel.dev/posts/so-you-want-to-write-java-in-neovim/
+-- needs to have jdtls via mason installed
 return {
   'mfussenegger/nvim-jdtls',
   ft = 'java',
@@ -63,6 +64,10 @@ return {
 
       local java_test_bundle = vim.split(vim.fn.glob(java_test_path .. '/extension/server/*.jar'), '\n')
 
+      -- vim.notify('java_test_bundle: ' .. vim.inspect(java_test_bundle), vim.log.levels.INFO)
+      -- vim.notify('java_test_bundle[1]: ' .. vim.inspect(java_test_bundle[1]), vim.log.levels.INFO)
+      -- vim.notify('java_test_bundle[1] ~= "": ' .. vim.inspect(java_test_bundle[1] ~= ''), vim.log.levels.INFO)
+
       if java_test_bundle[1] ~= '' then
         vim.list_extend(path.bundles, java_test_bundle)
       end
@@ -82,17 +87,17 @@ return {
       -- Useful if you're starting jdtls with a Java version that's
       -- different from the one the project uses.
       ---
-      path.runtimes = {
-        -- Note: the field `name` must be a valid `ExecutionEnvironment`,
-        -- you can find the list here:
-        -- https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
-        --
-        -- This example assume you are using sdkman: https://sdkman.io
-        {
-          name = 'JavaSE-17',
-          path = vim.fn.expand '/usr/bin/java',
-        },
-      }
+      -- path.runtimes = {
+      --   -- Note: the field `name` must be a valid `ExecutionEnvironment`,
+      --   -- you can find the list here:
+      --   -- https://github.com/eclipse/eclipse.jdt.ls/wiki/Running-the-JAVA-LS-server-from-the-command-line#initialize-request
+      --   --
+      --   -- This example assume you are using sdkman: https://sdkman.io
+      --   {
+      --     name = 'JavaSE-17',
+      --     path = vim.fn.expand '/usr/bin/java',
+      --   },
+      -- }
 
       cache_vars.paths = path
 
