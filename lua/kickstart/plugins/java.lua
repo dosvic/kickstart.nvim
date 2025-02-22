@@ -1,5 +1,6 @@
---https://ptrtojoel.dev/posts/so-you-want-to-write-java-in-neovim/
+-- https://ptrtojoel.dev/posts/so-you-want-to-write-java-in-neovim/
 -- needs to have jdtls via mason installed
+-- jdtls requires java 21
 return {
   'mfussenegger/nvim-jdtls',
   ft = 'java',
@@ -41,15 +42,20 @@ return {
 
       local jdtls_install = require('mason-registry').get_package('jdtls'):get_install_path()
 
-      -- lombok.jar needs to be manually downloaded and added to jdtls folder :/
-      -- jdtls needs some jar to hook into or something
-      path.java_agent = jdtls_install .. '/lombok.jar'
-      if vim.fn.filereadable(path.java_agent) == 0 then
-        vim.notify('Error: lombok.jar not found at ' .. path.java_agent, vim.log.levels.ERROR)
-      end
+      -- Automatically download lombok.jar if missing
+      local lombok_path = jdtls_install .. '/lombok.jar'
+      -- if vim.fn.filereadable(lombok_path) == 0 then
+      --   vim.notify('Downloading lombok.jar...', vim.log.levels.INFO)
+      --   local result = os.execute(string.format('curl -L -o "%s" https://projectlombok.org/downloads/lombok.jar', lombok_path))
+      --   if result ~= 0 then
+      --     vim.notify('Failed to download lombok.jar!', vim.log.levels.ERROR)
+      --   end
+      -- else
+      --   vim.notify('lombok.jar found', vim.log.levels.INFO)
+      -- end
+      path.java_agent = lombok_path
 
-      -- is that right? does this not need to be platform specific????
-      path.launcher_jar = vim.fn.glob(jdtls_install .. '/plugins/org.eclipse.equinox.launcher.jar')
+      path.launcher_jar = vim.fn.glob(jdtls_install .. '/plugins/org.eclipse.equinox.launcher_*.jar')
 
       if vim.fn.has 'mac' == 1 then
         path.platform_config = jdtls_install .. '/config_mac'
@@ -122,21 +128,12 @@ return {
     end
 
     local function enable_debugger(bufnr)
-      require('jdtls').setup_dap()
+      require('jdtls').setup_dap { hotcodereplace = 'auto' }
       require('jdtls.dap').setup_dap_main_class_configs()
 
       local opts = { buffer = bufnr }
       vim.keymap.set('n', '<leader>df', "<cmd>lua require('jdtls').test_class()<cr>", opts)
       vim.keymap.set('n', '<leader>dn', "<cmd>lua require('jdtls').test_nearest_method()<cr>", opts)
-
-      -- Add remote debugging configuration
-      vim.keymap.set('n', '<leader>dr', function()
-        require('jdtls').test_class {
-          vm_args = {
-            '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:8787',
-          },
-        }
-      end, opts)
     end
 
     local function jdtls_on_attach(client, bufnr)

@@ -640,7 +640,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -704,7 +704,7 @@ require('lazy').setup({
         ['deepseek-r1'] = 'deepseek/deepseek-r1',
         ['deepseek-r1-free'] = 'deepseek/deepseek-r1:free',
       }
-      local default_model = 'deepseek/deepseek-chat'
+      local default_model = 'deepseek/deepseek-r1'
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
