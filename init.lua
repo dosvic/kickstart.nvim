@@ -640,7 +640,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -721,10 +721,11 @@ require('lazy').setup({
         local model_id = models[opts.args]
         if model_id then
           require('avante').setup {
-            provider = 'openai',
-            openai = {
+            provider = 'openrouter',
+            openrouter = {
               endpoint = 'https://openrouter.ai/api/v1',
               model = model_id,
+              api_key_name = 'OPENROUTER_API_KEY',
             },
           }
           print('Switched to model: ' .. model_id)
