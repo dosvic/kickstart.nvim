@@ -42,7 +42,11 @@ return {
       local jdtls_install = require('mason-registry').get_package('jdtls'):get_install_path()
 
       -- lombok.jar needs to be manually downloaded and added to jdtls folder :/
+      -- jdtls needs some jar to hook into or something
       path.java_agent = jdtls_install .. '/lombok.jar'
+      if vim.fn.filereadable(path.java_agent) == 0 then
+        vim.notify('Error: lombok.jar not found at ' .. path.java_agent, vim.log.levels.ERROR)
+      end
 
       -- is that right? does this not need to be platform specific????
       path.launcher_jar = vim.fn.glob(jdtls_install .. '/plugins/org.eclipse.equinox.launcher.jar')
@@ -118,7 +122,7 @@ return {
     end
 
     local function enable_debugger(bufnr)
-      require('jdtls').setup_dap { hotcodereplace = 'auto' }
+      require('jdtls').setup_dap()
       require('jdtls.dap').setup_dap_main_class_configs()
 
       local opts = { buffer = bufnr }
