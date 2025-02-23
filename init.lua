@@ -750,7 +750,7 @@ require('lazy').setup({
         ['o3-mini-high'] = 'openai/o3-mini-high',
         ['o3-mini'] = 'openai/o3-mini',
       }
-      local default_model = 'o3-mini-high'
+      local default_model = models['deepseek-v3']
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
@@ -767,9 +767,8 @@ require('lazy').setup({
         local model_id = models[opts.args]
         if model_id then
           require('avante').setup {
-            provider = 'openai',
-            openai = {
-              endpoint = 'https://openrouter.ai/api/v1',
+            provider = 'openrouter',
+            openrouter = {
               model = model_id,
             },
           }
@@ -790,10 +789,14 @@ require('lazy').setup({
 
       -- Initial setup with default model
       require('avante').setup {
-        provider = 'openai',
-        openai = {
-          endpoint = 'https://openrouter.ai/api/v1',
-          model = default_model,
+        provider = 'openrouter',
+        vendors = {
+          openrouter = {
+            __inherited_from = 'openai',
+            endpoint = 'https://openrouter.ai/api/v1',
+            api_key_name = 'OPENROUTER_API_KEY',
+            model = default_model,
+          },
         },
       }
     end,
@@ -1004,7 +1007,6 @@ require('lazy').setup({
     'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
       require('tokyonight').setup {
         styles = {
           comments = { italic = false }, -- Disable italics in comments
