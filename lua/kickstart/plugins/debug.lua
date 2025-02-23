@@ -76,6 +76,13 @@ return {
       end,
       desc = 'Debug: See last session result.',
     },
+    {
+      '<leader>dr',
+      function()
+        require('dap').repl.toggle()
+      end,
+      desc = 'Debug: Toggle REPL',
+    },
   },
   config = function()
     local dap = require 'dap'
@@ -103,6 +110,13 @@ return {
         type = 'java',
         request = 'launch',
         name = 'Launch Java Program',
+      },
+      {
+        type = 'java',
+        request = 'attach',
+        name = 'Attach to Remote (port 8787)',
+        hostName = '127.0.0.1',
+        port = 8787,
       },
     }
 
