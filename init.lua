@@ -743,6 +743,7 @@ require('lazy').setup({
       local models = {
         ['llama-3.1-70b:free'] = 'meta-llama/llama-3.1-70b-instruct:free',
         ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet',
+        ['claude-3.7-sonnet'] = 'anthropic/claude-3.7-sonnet',
         ['qwen-2.5-coder-32b'] = 'qwen/qwen-2.5-coder-32b-instruct',
         ['deepseek-v3'] = 'deepseek/deepseek-chat',
         ['deepseek-r1'] = 'deepseek/deepseek-r1',
@@ -750,7 +751,7 @@ require('lazy').setup({
         ['o3-mini-high'] = 'openai/o3-mini-high',
         ['o3-mini'] = 'openai/o3-mini',
       }
-      local default_model = models['deepseek-v3']
+      local default_model = models['claude-3.7-sonnet']
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
