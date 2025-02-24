@@ -132,9 +132,12 @@ return {
       require('jdtls.dap').setup_dap_main_class_configs()
 
       local opts = { buffer = bufnr }
-      vim.keymap.set('n', '<leader>df', "<cmd>lua require('jdtls').test_class()<cr>", opts)
-      vim.keymap.set('n', '<leader>dn', "<cmd>lua require('jdtls').test_nearest_method()<cr>", opts)
-      vim.keymap.set('n', '<leader>dt', "<cmd>lua require('jdtls').test_class({ config = { dap = true } })<cr>", opts)
+      -- Test execution (without debugging)
+      vim.keymap.set('n', '<leader>tc', "<cmd>lua require('jdtls').test_class()<cr>", opts)
+      vim.keymap.set('n', '<leader>tm', "<cmd>lua require('jdtls').test_nearest_method()<cr>", opts)
+
+      -- Debug tests (with debugging enabled)
+      vim.keymap.set('n', '<leader>dc', "<cmd>lua require('jdtls').test_class({ config = { dap = true } })<cr>", opts)
       vim.keymap.set('n', '<leader>dm', "<cmd>lua require('jdtls').test_nearest_method({ config = { dap = true } })<cr>", opts)
     end
 
