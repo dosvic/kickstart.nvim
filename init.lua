@@ -751,7 +751,7 @@ require('lazy').setup({
         ['o3-mini-high'] = 'openai/o3-mini-high',
         ['o3-mini'] = 'openai/o3-mini',
       }
-      local default_model = models['claude-3.7-sonnet']
+      local default_model = models['o3-mini']
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
