@@ -751,7 +751,7 @@ require('lazy').setup({
         ['o3-mini-high'] = 'openai/o3-mini-high',
         ['o3-mini'] = 'openai/o3-mini',
       }
-      local default_model = models['o3-mini']
+      local default_model = models['claude-3.7-sonnet']
 
       -- Create command to switch models
       vim.api.nvim_create_user_command('AvanteModel', function(opts)
@@ -795,6 +795,13 @@ require('lazy').setup({
           endpoint = 'https://openrouter.ai/api/v1',
           model = default_model,
         },
+        copilot = {
+          model = 'claude-3.5-sonnet',
+        },
+        behaviour = {
+          auto_suggestions = false,
+        },
+        debug = true,
       }
     end,
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
@@ -1063,7 +1070,7 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'java', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'java', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'javascript', 'css' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
