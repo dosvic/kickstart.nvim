@@ -709,6 +709,7 @@ require('lazy').setup({
         'ruff', -- Used to format python code
         'java-test',
         'java-debug-adapter',
+        'prettier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -741,15 +742,11 @@ require('lazy').setup({
     config = function()
       -- List of available models
       local models = {
-        ['llama-3.1-70b:free'] = 'meta-llama/llama-3.1-70b-instruct:free',
         ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet',
         ['claude-3.7-sonnet'] = 'anthropic/claude-3.7-sonnet',
-        ['qwen-2.5-coder-32b'] = 'qwen/qwen-2.5-coder-32b-instruct',
         ['deepseek-v3'] = 'deepseek/deepseek-chat',
         ['deepseek-r1'] = 'deepseek/deepseek-r1',
-        ['deepseek-r1-free'] = 'deepseek/deepseek-r1:free',
         ['o3-mini-high'] = 'openai/o3-mini-high',
-        ['o3-mini'] = 'openai/o3-mini',
       }
       local default_model = models['claude-3.7-sonnet']
 
@@ -790,18 +787,22 @@ require('lazy').setup({
 
       -- Initial setup with default model
       require('avante').setup {
-        provider = 'openai',
+        provider = 'copilot',
         openai = {
           endpoint = 'https://openrouter.ai/api/v1',
           model = default_model,
         },
         copilot = {
-          model = 'claude-3.5-sonnet',
+          -- model = 'claude-3.5-sonnet',
+          model = 'claude-3.7-sonnet-thought',
+          -- for claude-3.7-sonnet-thought
+          temperature = 1,
+          max_tokens = 20000,
         },
         behaviour = {
           auto_suggestions = false,
         },
-        debug = true,
+        -- debug = true,
       }
     end,
     -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
