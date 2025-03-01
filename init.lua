@@ -738,7 +738,7 @@ require('lazy').setup({
     'yetone/avante.nvim',
     event = 'VeryLazy',
     lazy = false,
-    version = false, -- set this if you want to always pull the latest change
+    version = false,
     config = function()
       require('avante').setup {
         provider = 'copilot',
@@ -747,11 +747,15 @@ require('lazy').setup({
           model = 'deepseek/deepseek-r1',
         },
         copilot = {
-          -- model = 'claude-3.5-sonnet',
-          model = 'claude-3.7-sonnet-thought',
-          -- for claude-3.7-sonnet-thought
-          temperature = 1,
-          max_tokens = 20000,
+          model = 'claude-3.7-sonnet',
+        },
+        vendors = {
+          ['copilot-claude-sonnet-3.7-thought'] = {
+            __inherited_from = 'claude',
+            model = 'claude-3.7-sonnet-thought',
+            temperature = 1,
+            max_tokens = 20000,
+          },
         },
         behaviour = {
           auto_suggestions = false,
