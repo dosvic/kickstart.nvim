@@ -740,57 +740,11 @@ require('lazy').setup({
     lazy = false,
     version = false, -- set this if you want to always pull the latest change
     config = function()
-      -- List of available models
-      local models = {
-        ['claude-3.5-sonnet'] = 'anthropic/claude-3.5-sonnet',
-        ['claude-3.7-sonnet'] = 'anthropic/claude-3.7-sonnet',
-        ['deepseek-v3'] = 'deepseek/deepseek-chat',
-        ['deepseek-r1'] = 'deepseek/deepseek-r1',
-        ['o3-mini-high'] = 'openai/o3-mini-high',
-      }
-      local default_model = models['claude-3.7-sonnet']
-
-      -- Create command to switch models
-      vim.api.nvim_create_user_command('AvanteModel', function(opts)
-        if opts.args == '' then
-          -- Show available models if no argument provided
-          local model_names = {}
-          for name, _ in pairs(models) do
-            table.insert(model_names, name)
-          end
-          print('Available models: ' .. table.concat(model_names, ', '))
-          return
-        end
-
-        local model_id = models[opts.args]
-        if model_id then
-          require('avante').setup {
-            provider = 'openai',
-            openai = {
-              model = model_id,
-            },
-          }
-          print('Switched to model: ' .. model_id)
-        else
-          print 'Invalid model name. Use :AvanteModel to see available models.'
-        end
-      end, {
-        nargs = '?',
-        complete = function()
-          local model_names = {}
-          for name, _ in pairs(models) do
-            table.insert(model_names, name)
-          end
-          return model_names
-        end,
-      })
-
-      -- Initial setup with default model
       require('avante').setup {
         provider = 'copilot',
         openai = {
           endpoint = 'https://openrouter.ai/api/v1',
-          model = default_model,
+          model = 'deepseek/deepseek-r1',
         },
         copilot = {
           -- model = 'claude-3.5-sonnet',
