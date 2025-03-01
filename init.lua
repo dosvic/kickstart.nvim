@@ -742,19 +742,25 @@ require('lazy').setup({
     config = function()
       require('avante').setup {
         provider = 'copilot',
-        openai = {
-          endpoint = 'https://openrouter.ai/api/v1',
-          model = 'deepseek/deepseek-r1',
-        },
         copilot = {
-          model = 'claude-3.7-sonnet',
+          model = 'claude-3.7-sonnet-thought',
+          temperature = 1,
+          max_tokens = 20000,
         },
         vendors = {
-          ['copilot-claude-sonnet-3.7-thought'] = {
-            __inherited_from = 'claude',
-            model = 'claude-3.7-sonnet-thought',
-            temperature = 1,
-            max_tokens = 20000,
+          ['openrouter-deepseek-r1'] = {
+            __inherited_from = 'openai',
+            model = 'deepseek/deepseek-r1',
+            endpoint = 'https://openrouter.ai/api/v1',
+            api_key_name = 'OPENROUTER_API_KEY',
+            disable_tools = true,
+          },
+          ['openrouter-deepseek-v3'] = {
+            __inherited_from = 'openai',
+            model = 'deepseek/deepseek-chat',
+            endpoint = 'https://openrouter.ai/api/v1',
+            api_key_name = 'OPENROUTER_API_KEY',
+            disable_tools = true,
           },
         },
         behaviour = {
