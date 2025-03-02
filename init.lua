@@ -175,6 +175,11 @@ vim.keymap.set('n', '-', '<cmd>Ex<CR>')
 vim.keymap.set('n', '<C-d>', '<C-d>zz')
 vim.keymap.set('n', '<C-u>', '<C-u>zz')
 
+-- Reload Neovim configuration
+vim.keymap.set('n', '<leader><leader>x', '<cmd>source %<CR>', { desc = '[R]eload [C]onfig' })
+vim.keymap.set('n', '<leader>x', ':.lua<CR>', { desc = 'E[x]ecute line' })
+vim.keymap.set('v', '<leader>x', ':lua<CR>', { desc = 'E[x]ecute selection' })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
@@ -746,6 +751,7 @@ require('lazy').setup({
           model = 'claude-3.7-sonnet-thought',
           temperature = 1,
           max_tokens = 20000,
+          disable_tools = {},
         },
         vendors = {
           ['openrouter-deepseek-r1'] = {
