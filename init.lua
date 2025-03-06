@@ -759,14 +759,18 @@ require('lazy').setup({
             model = 'deepseek/deepseek-r1',
             endpoint = 'https://openrouter.ai/api/v1',
             api_key_name = 'OPENROUTER_API_KEY',
-            disable_tools = true,
           },
           ['openrouter-deepseek-v3'] = {
             __inherited_from = 'openai',
             model = 'deepseek/deepseek-chat',
             endpoint = 'https://openrouter.ai/api/v1',
             api_key_name = 'OPENROUTER_API_KEY',
-            disable_tools = true,
+          },
+          ['qwen/qwq-32b'] = {
+            __inherited_from = 'openai',
+            model = 'qwen/qwq-32b',
+            endpoint = 'https://openrouter.ai/api/v1',
+            api_key_name = 'OPENROUTER_API_KEY',
           },
         },
         behaviour = {
