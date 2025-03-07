@@ -742,8 +742,7 @@ require('lazy').setup({
   {
     'yetone/avante.nvim',
     event = 'VeryLazy',
-    -- version = false,
-    commit = '6d39e06f574416c50710dd05c1a62f3496af3f70',
+    version = false,
     config = function()
       require('avante').setup {
         provider = 'copilot',
