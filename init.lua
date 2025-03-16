@@ -27,12 +27,11 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', 'ge', vim.diagnostic.open_float, { desc = 'Open diagnostic float' })
 vim.keymap.set('n', 'gE', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic' })
 vim.keymap.set('n', 'gN', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic' })
-vim.keymap.set('n', '-', '<cmd>Ex<CR>')
-vim.keymap.set('n', '<C-d>', '<C-d>zz')
-vim.keymap.set('n', '<C-u>', '<C-u>zz')
 vim.keymap.set('n', '<leader><leader>x', '<cmd>source %<CR>', { desc = '[R]eload [C]onfig' })
 vim.keymap.set('n', '<leader>x', ':.lua<CR>', { desc = 'E[x]ecute line' })
 vim.keymap.set('v', '<leader>x', ':lua<CR>', { desc = 'E[x]ecute selection' })
