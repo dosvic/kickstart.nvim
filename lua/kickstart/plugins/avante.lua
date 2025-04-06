@@ -7,7 +7,7 @@ return {
       require('avante').setup {
         provider = 'copilot',
         copilot = {
-          model = 'claude-3.7-sonnet',
+          model = 'claude-3.5-sonnet',
           --model = 'claude-3.5-sonnet',
           -- temperature = 1,
           -- max_tokens = 20000,
@@ -42,6 +42,8 @@ return {
           auto_suggestions = false,
         },
       }
+
+      vim.keymap.set('n', '<leader>ad', '<cmd>AvanteClear<cr>', { desc = '[a]vante [d]elete chat history' })
     end,
     build = 'make',
     dependencies = {
