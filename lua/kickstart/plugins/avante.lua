@@ -7,31 +7,30 @@ return {
       require('avante').setup {
         provider = 'copilot',
         copilot = {
-          model = 'claude-3.5-sonnet',
-          --model = 'claude-3.5-sonnet',
+          model = 'claude-3.7-sonnet',
           -- temperature = 1,
           -- max_tokens = 20000,
         },
         vendors = {
-          ['openrouter-deepseek-r1'] = {
+          ['openrouter/deepseek-r1'] = {
             __inherited_from = 'openai',
             model = 'deepseek/deepseek-r1',
             endpoint = 'https://openrouter.ai/api/v1',
             api_key_name = 'OPENROUTER_API_KEY',
           },
-          ['openrouter-deepseek-v3'] = {
+          ['openrouter/deepseek-v3'] = {
             __inherited_from = 'openai',
             model = 'deepseek/deepseek-chat',
             endpoint = 'https://openrouter.ai/api/v1',
             api_key_name = 'OPENROUTER_API_KEY',
           },
-          ['openrouter-claude-3.7-sonnet'] = {
+          ['openrouter/claude-3.7-sonnet'] = {
             __inherited_from = 'openai',
             model = 'anthropic/claude-3.7-sonnet',
             endpoint = 'https://openrouter.ai/api/v1',
             api_key_name = 'OPENROUTER_API_KEY',
           },
-          ['openrouter-gemini/gemini-2.5-pro'] = {
+          ['openrouter/gemini-2.5-pro:free'] = {
             __inherited_from = 'openai',
             model = 'google/gemini-2.5-pro-exp-03-25:free',
             endpoint = 'https://openrouter.ai/api/v1',
