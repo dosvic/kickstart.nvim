@@ -4,37 +4,35 @@ return {
     event = 'VeryLazy',
     version = false,
     config = function()
+      local function openrouter_model(opts)
+        local defaults = {
+          __inherited_from = 'openai',
+          endpoint = 'https://openrouter.ai/api/v1',
+          api_key_name = 'OPENROUTER_API_KEY',
+        }
+
+        return vim.tbl_deep_extend('force', defaults, opts or {})
+      end
+
       require('avante').setup {
         provider = 'copilot',
         copilot = {
-          model = 'claude-3.7-sonnet',
+          model = 'gemini-2.5-pro',
           -- temperature = 1,
           -- max_tokens = 20000,
         },
         vendors = {
-          ['openrouter/deepseek-r1'] = {
-            __inherited_from = 'openai',
+          ['openrouter/deepseek-r1'] = openrouter_model {
             model = 'deepseek/deepseek-r1',
-            endpoint = 'https://openrouter.ai/api/v1',
-            api_key_name = 'OPENROUTER_API_KEY',
+            display_name = 'openrouter/deepseek-r1',
           },
-          ['openrouter/deepseek-v3'] = {
-            __inherited_from = 'openai',
+          ['openrouter/deepseek-v3'] = openrouter_model {
             model = 'deepseek/deepseek-chat',
-            endpoint = 'https://openrouter.ai/api/v1',
-            api_key_name = 'OPENROUTER_API_KEY',
+            display_name = 'openrouter/deepseek-v3',
           },
-          ['openrouter/claude-3.7-sonnet'] = {
-            __inherited_from = 'openai',
-            model = 'anthropic/claude-3.7-sonnet',
-            endpoint = 'https://openrouter.ai/api/v1',
-            api_key_name = 'OPENROUTER_API_KEY',
-          },
-          ['openrouter/gemini-2.5-pro:free'] = {
-            __inherited_from = 'openai',
-            model = 'google/gemini-2.5-pro-exp-03-25:free',
-            endpoint = 'https://openrouter.ai/api/v1',
-            api_key_name = 'OPENROUTER_API_KEY',
+          ['openrouter/grok-3-mini-beta'] = openrouter_model {
+            model = 'x-ai/grok-3-mini-beta',
+            display_name = 'openrouter/grok-3-mini-beta',
           },
         },
         behaviour = {
