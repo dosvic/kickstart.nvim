@@ -15,11 +15,11 @@ return {
       end
 
       require('avante').setup {
-        provider = 'copilot',
-        copilot = {
-          model = 'gemini-2.5-pro',
-          -- temperature = 1,
-          -- max_tokens = 20000,
+        provider = 'openai',
+        openai = {
+          model = 'google/gemini-2.5-pro-preview-03-25',
+          api_key_name = 'OPENROUTER_API_KEY',
+          endpoint = 'https://openrouter.ai/api/v1',
         },
         vendors = {
           ['openrouter/deepseek-r1'] = openrouter_model {
