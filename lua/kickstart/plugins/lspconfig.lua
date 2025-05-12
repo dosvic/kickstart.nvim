@@ -102,6 +102,7 @@ return {
         rust_analyzer = {},
         ts_ls = {},
         angularls = {},
+        tailwindcss = {},
         lua_ls = {
           settings = {
             Lua = {

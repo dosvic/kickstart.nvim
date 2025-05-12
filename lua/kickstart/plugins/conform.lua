@@ -33,6 +33,7 @@ return {
         python = { 'ruff' },
         javascript = { 'prettier' },
         typescript = { 'prettier' },
+        html = { 'prettier' },
         typescriptreact = { 'prettier' },
       },
     },

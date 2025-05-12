@@ -25,6 +25,10 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
+vim.opt.textwidth = 120
+vim.opt.wrap = true
+vim.opt.linebreak = true
+vim.opt.breakindent = true
 
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<C-d>', '<C-d>zz')

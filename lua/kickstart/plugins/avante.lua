@@ -15,7 +15,7 @@ return {
       end
 
       require('avante').setup {
-        provider = 'openai',
+        provider = 'openrouter/gpt-4.1',
         openai = {
           model = 'google/gemini-2.5-pro-preview-03-25',
           api_key_name = 'OPENROUTER_API_KEY',
@@ -33,6 +33,10 @@ return {
           ['openrouter/grok-3-mini-beta'] = openrouter_model {
             model = 'x-ai/grok-3-mini-beta',
             display_name = 'openrouter/grok-3-mini-beta',
+          },
+          ['openrouter/gpt-4.1'] = openrouter_model {
+            model = 'openai/gpt-4.1',
+            display_name = 'openrouter/gpt-4.1',
           },
         },
         behaviour = {
