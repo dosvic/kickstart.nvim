@@ -28,11 +28,7 @@ return {
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
-              return client:supports_method(method, bufnr)
-            else
-              return client.supports_method(method, { bufnr = bufnr })
-            end
+            return client:supports_method(method, bufnr)
           end
 
           local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -127,21 +123,21 @@ return {
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      local mason_lspconfig_servers = vim.tbl_filter(function(server_name)
+        return server_name ~= 'jdtls'
+      end, vim.tbl_keys(servers))
       require('mason-lspconfig').setup {
-        ensure_installed = {},
+        ensure_installed = mason_lspconfig_servers,
         automatic_installation = false,
-        handlers = {
-          function(server_name)
-            if server_name == 'jdtls' then
-              return
-            end
-
-            local server = servers[server_name] or {}
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
-          end,
-        },
       }
+
+      for server_name, server in pairs(servers) do
+        if server_name ~= 'jdtls' then
+          server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+          vim.lsp.config(server_name, server)
+          vim.lsp.enable(server_name)
+        end
+      end
     end,
   },
 }
