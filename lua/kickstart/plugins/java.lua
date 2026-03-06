@@ -231,7 +231,7 @@ return {
               runtimes = path.runtimes,
             },
             maven = {
-              downloadSources = true,
+              downloadSources = false,
             },
             implementationsCodeLens = {
               enabled = true,
@@ -249,7 +249,7 @@ return {
               --}
             },
             format = {
-              enabled = true,
+              enabled = false,
               -- settings = {
               --   profile = 'asdf'
               -- },
