@@ -114,14 +114,20 @@ return {
         jdtls = {},
       }
 
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
+      local ensure_installed = {
+        'ty',
+        'lua-language-server',
+        'rust-analyzer',
+        'typescript-language-server',
+        'angular-language-server',
+        'tailwindcss-language-server',
+        'jdtls',
         'stylua',
         'ruff',
         'java-test',
         'java-debug-adapter',
         'prettier',
-      })
+      }
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       for server_name, server in pairs(servers) do
