@@ -1,14 +1,16 @@
 return {
   {
-    'neovim/nvim-lspconfig',
+    'williamboman/mason.nvim',
+    opts = {},
     dependencies = {
-      { 'williamboman/mason.nvim', opts = {} },
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       { 'j-hui/fidget.nvim', opts = {} },
       'hrsh7th/cmp-nvim-lsp',
     },
     config = function()
+      require('mason').setup()
+
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
@@ -94,7 +96,7 @@ return {
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       local servers = {
-        pyright = {},
+        ty = {},
         rust_analyzer = {},
         ts_ls = {},
         angularls = {},
@@ -124,7 +126,7 @@ return {
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       local mason_lspconfig_servers = vim.tbl_filter(function(server_name)
-        return server_name ~= 'jdtls'
+        return server_name ~= 'jdtls' and server_name ~= 'ty'
       end, vim.tbl_keys(servers))
       require('mason-lspconfig').setup {
         ensure_installed = mason_lspconfig_servers,

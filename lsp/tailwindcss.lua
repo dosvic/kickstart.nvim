@@ -1,0 +1,45 @@
+return {
+  cmd = { 'tailwindcss-language-server', '--stdio' },
+  filetypes = {
+    'html',
+    'htmlangular',
+    'css',
+    'scss',
+    'sass',
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact',
+    'vue',
+    'svelte',
+    'templ',
+  },
+  root_markers = {
+    'tailwind.config.js',
+    'tailwind.config.cjs',
+    'tailwind.config.mjs',
+    'tailwind.config.ts',
+    'postcss.config.js',
+    'postcss.config.cjs',
+    'postcss.config.mjs',
+    'postcss.config.ts',
+    'package.json',
+    '.git',
+  },
+  settings = {
+    tailwindCSS = {
+      validate = true,
+      classAttributes = {
+        'class',
+        'className',
+        'class:list',
+        'classList',
+        'ngClass',
+      },
+      includeLanguages = {
+        templ = 'html',
+        htmlangular = 'html',
+      },
+    },
+  },
+}
