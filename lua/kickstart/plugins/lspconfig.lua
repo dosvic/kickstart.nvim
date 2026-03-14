@@ -3,7 +3,6 @@ return {
     'williamboman/mason.nvim',
     opts = {},
     dependencies = {
-      'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
       { 'j-hui/fidget.nvim', opts = {} },
       'hrsh7th/cmp-nvim-lsp',
@@ -124,14 +123,6 @@ return {
         'prettier',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
-      local mason_lspconfig_servers = vim.tbl_filter(function(server_name)
-        return server_name ~= 'jdtls' and server_name ~= 'ty'
-      end, vim.tbl_keys(servers))
-      require('mason-lspconfig').setup {
-        ensure_installed = mason_lspconfig_servers,
-        automatic_installation = false,
-      }
 
       for server_name, server in pairs(servers) do
         if server_name ~= 'jdtls' then
