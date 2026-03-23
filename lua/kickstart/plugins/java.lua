@@ -14,11 +14,14 @@ return {
       local cache_vars = {}
 
       local root_files = {
-        '.git',
-        'mvnw',
-        'gradlew',
         'pom.xml',
+        'mvnw',
         'build.gradle',
+        'build.gradle.kts',
+        'settings.gradle',
+        'settings.gradle.kts',
+        'gradlew',
+        '.git',
         'build.sbt',
       }
 
@@ -31,6 +34,10 @@ return {
         debugger = true,
       }
 
+      local function mason_package_path(name)
+        return vim.fn.stdpath 'data' .. '/mason/packages/' .. name
+      end
+
       local function get_jdtls_paths()
         if cache_vars.paths then
           return cache_vars.paths
@@ -40,7 +47,7 @@ return {
 
         path.data_dir = vim.fn.stdpath 'cache' .. '/nvim-jdtls'
 
-        local jdtls_install = require('mason-registry').get_package('jdtls'):get_install_path()
+        local jdtls_install = mason_package_path 'jdtls'
 
         -- Automatically download lombok.jar if missing
         local lombok_path = jdtls_install .. '/lombok.jar'
@@ -70,7 +77,7 @@ return {
         ---
         -- Include java-test bundle if present
         ---
-        local java_test_path = require('mason-registry').get_package('java-test'):get_install_path()
+        local java_test_path = mason_package_path 'java-test'
 
         local java_test_bundle = vim.split(vim.fn.glob(java_test_path .. '/extension/server/*.jar'), '\n')
 
@@ -85,7 +92,7 @@ return {
         ---
         -- Include java-debug-adapter bundle if present
         ---
-        local java_debug_path = require('mason-registry').get_package('java-debug-adapter'):get_install_path()
+        local java_debug_path = mason_package_path 'java-debug-adapter'
 
         local java_debug_bundle = vim.split(vim.fn.glob(java_debug_path .. '/extension/server/com.microsoft.java.debug.plugin-*.jar'), '\n')
 
@@ -112,6 +119,53 @@ return {
         cache_vars.paths = path
 
         return path
+      end
+
+      local function project_name(root_dir)
+        return vim.fn.fnamemodify(root_dir, ':t')
+      end
+
+      local function project_workspace_dir(base_dir, root_dir)
+        local root_path = vim.fn.fnamemodify(root_dir, ':p')
+        local workspace_id = root_path:gsub('[/\\:]', '_'):gsub('_+', '_'):gsub('^_', '')
+        return base_dir .. '/' .. workspace_id
+      end
+
+      local function get_jdtls_client(bufnr)
+        for _, client in ipairs(vim.lsp.get_clients { bufnr = bufnr, name = 'jdtls' }) do
+          return client
+        end
+      end
+
+      local function get_active_jdtls_clients()
+        local clients = {}
+        local seen = {}
+
+        for _, client in ipairs(vim.lsp.get_clients { name = 'jdtls' }) do
+          local root_dir = client.config and client.config.root_dir
+          if root_dir and not seen[root_dir] then
+            seen[root_dir] = true
+            table.insert(clients, client)
+          end
+        end
+
+        table.sort(clients, function(a, b)
+          local a_root = a.config.root_dir
+          local b_root = b.config.root_dir
+          return a_root < b_root
+        end)
+
+        return clients
+      end
+
+      local function stop_jdtls_client(client)
+        if not client then
+          return
+        end
+
+        local name = project_name(client.config.root_dir)
+        vim.lsp.stop_client(client.id)
+        vim.notify('Stopped jdtls: ' .. name, vim.log.levels.INFO)
       end
 
       local function enable_codelens(bufnr)
@@ -169,8 +223,19 @@ return {
         local extendedClientCapabilities = jdtls.extendedClientCapabilities
         extendedClientCapabilities.onCompletionItemSelectedCommand = 'editor.action.triggerParameterHints'
 
+        local bufname = vim.api.nvim_buf_get_name(event.buf)
+        if bufname == '' or bufname:match '^%a[%w+.-]*://' then
+          return
+        end
+
+        local root_dir = jdtls.setup.find_root(root_files, bufname)
+        if not root_dir then
+          vim.notify('jdtls: no project root found for ' .. bufname, vim.log.levels.WARN)
+          return
+        end
+
         local path = get_jdtls_paths()
-        local data_dir = path.data_dir .. '/' .. vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
+        local data_dir = project_workspace_dir(path.data_dir, root_dir)
 
         if cache_vars.capabilities == nil then
           jdtls.extendedClientCapabilities.resolveAdditionalTextEditsSupport = true
@@ -293,7 +358,7 @@ return {
           settings = lsp_settings,
           on_attach = jdtls_on_attach,
           capabilities = cache_vars.capabilities,
-          root_dir = jdtls.setup.find_root(root_files),
+          root_dir = root_dir,
           flags = {
             allow_incremental_sync = true,
           },
@@ -303,6 +368,52 @@ return {
           },
         }
       end
+
+      vim.api.nvim_create_user_command('JdtlsStopCurrent', function()
+        local client = get_jdtls_client(0)
+        if not client then
+          vim.notify('No jdtls client attached to current buffer', vim.log.levels.INFO)
+          return
+        end
+
+        stop_jdtls_client(client)
+      end, { desc = 'Stop jdtls for the current buffer project' })
+
+      vim.api.nvim_create_user_command('JdtlsStopPick', function()
+        local clients = get_active_jdtls_clients()
+        if vim.tbl_isempty(clients) then
+          vim.notify('No active jdtls clients', vim.log.levels.INFO)
+          return
+        end
+
+        vim.ui.select(clients, {
+          prompt = 'Stop jdtls project',
+          format_item = function(client)
+            return string.format('%s — %s', project_name(client.config.root_dir), client.config.root_dir)
+          end,
+        }, function(choice)
+          if not choice then
+            return
+          end
+
+          stop_jdtls_client(choice)
+        end)
+      end, { desc = 'Pick and stop an active jdtls project' })
+
+      vim.api.nvim_create_user_command('JdtlsList', function()
+        local clients = get_active_jdtls_clients()
+        if vim.tbl_isempty(clients) then
+          vim.notify('No active jdtls clients', vim.log.levels.INFO)
+          return
+        end
+
+        local lines = { 'Active jdtls clients:' }
+        for _, client in ipairs(clients) do
+          table.insert(lines, string.format('- [%d] %s', client.id, client.config.root_dir))
+        end
+
+        vim.notify(table.concat(lines, '\n'), vim.log.levels.INFO)
+      end, { desc = 'List active jdtls projects' })
 
       vim.api.nvim_create_autocmd('FileType', {
         group = java_cmds,
