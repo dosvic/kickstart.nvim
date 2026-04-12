@@ -218,20 +218,57 @@ return {
         vim.keymap.set('n', '<leader>pjp', "<cmd>lua require('jdtls').javap()<cr>", opts)
       end
 
+      -- jdt:// buffers get filetype java so nvim-jdtls can decompile them, but they have no
+      -- filesystem path - we must attach using an existing project's root (or cwd)
+      local function root_dir_for_jdt_uri()
+        local cwd = vim.fn.fnamemodify(vim.fn.getcwd(), ':p')
+        local fallback
+        for _, client in ipairs(vim.lsp.get_clients { name = 'jdtls' }) do
+          local r = client.config and client.config.root_dir
+          if r then
+            local rp = vim.fn.fnamemodify(r, ':p')
+            if vim.startswith(cwd, rp) then
+              return r
+            end
+            fallback = fallback or r
+          end
+        end
+        if fallback then
+          return fallback
+        end
+        return require('jdtls').setup.find_root(root_files, cwd .. '/.java')
+      end
+
       local function jdtls_setup(event)
         local jdtls = require 'jdtls'
         local extendedClientCapabilities = jdtls.extendedClientCapabilities
         extendedClientCapabilities.onCompletionItemSelectedCommand = 'editor.action.triggerParameterHints'
 
         local bufname = vim.api.nvim_buf_get_name(event.buf)
-        if bufname == '' or bufname:match '^%a[%w+.-]*://' then
+        if bufname == '' then
           return
         end
 
-        local root_dir = jdtls.setup.find_root(root_files, bufname)
-        if not root_dir then
-          vim.notify('jdtls: no project root found for ' .. bufname, vim.log.levels.WARN)
+        -- local root_dir = jdtls.setup.find_root(root_files, bufname)
+        -- if not root_dir then
+        --   vim.notify('jdtls: no project root found for ' .. bufname, vim.log.levels.WARN)
+        --   return
+        -- end
+        local root_dir
+        if vim.startswith(bufname, 'jdt://') then
+          root_dir = root_dir_for_jdt_uri()
+          if not root_dir then
+            vim.notify('jdtls: open Java file in your project first (no jdtls root for jdt:// buffer)', vim.log.levels.WARN)
+            return
+          end
+        elseif bufname:match '^%a[%w+.-]*://' then
           return
+        else
+          root_dir = jdtls.setup.find_root(root_files, bufname)
+          if not root_dir then
+            vim.notify('jdtls: no project root found for ' .. bufname, vim.log.levels.WARN)
+            return
+          end
         end
 
         local path = get_jdtls_paths()

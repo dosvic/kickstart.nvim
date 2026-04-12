@@ -103,6 +103,14 @@ return {
         lua_ls = {
           settings = {
             Lua = {
+              runtime = {
+                version = 'LuaJIT',
+              },
+              workspace = {
+                checkThirdParty = false,
+                -- VIMRUNTIME/lua hold Neovim API meta; avoids racing lazydev (ft=lua)
+                library = { vim.env.VIMRUNTIME .. '/lua' },
+              },
               completion = {
                 callSnippet = 'Replace',
               },
