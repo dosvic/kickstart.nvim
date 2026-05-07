@@ -34,7 +34,7 @@ return {
           gs.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
         end, 'Git: Reset selected hunk')
         map('n', '<leader>hS', gs.stage_buffer, 'Git: Stage buffer')
-        map('n', '<leader>hu', gs.undo_stage_hunk, 'Git: Undo stage hunk')
+        map('n', '<leader>hu', gs.stage_hunk, 'Git: Stage/unstage hunk')
         map('n', '<leader>hR', gs.reset_buffer, 'Git: Reset buffer')
         map('n', '<leader>hp', gs.preview_hunk, 'Git: Preview hunk')
         map('n', '<leader>hb', function()

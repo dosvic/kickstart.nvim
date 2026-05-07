@@ -26,8 +26,8 @@ return {
       }
 
       local features = {
-        -- change this to `true` to enable codelens
-        codelens = true,
+        -- JDTLS codelens renders virtual lines above classes and methods.
+        codelens = false,
 
         -- change this to `true` if you have `nvim-dap`,
         -- `java-test` and `java-debug-adapter` installed
@@ -64,10 +64,12 @@ return {
 
         path.launcher_jar = vim.fn.glob(jdtls_install .. '/plugins/org.eclipse.equinox.launcher_*.jar')
 
+        local machine = vim.uv.os_uname().machine
         if vim.fn.has 'mac' == 1 then
-          path.platform_config = jdtls_install .. '/config_mac'
+          path.platform_config = jdtls_install .. (machine == 'arm64' and '/config_mac_arm' or '/config_mac')
         elseif vim.fn.has 'unix' == 1 then
-          path.platform_config = jdtls_install .. '/config_linux'
+          local is_arm = machine == 'aarch64' or machine == 'arm64'
+          path.platform_config = jdtls_install .. (is_arm and '/config_linux_arm' or '/config_linux')
         elseif vim.fn.has 'win32' == 1 then
           path.platform_config = jdtls_install .. '/config_win'
         end
@@ -171,6 +173,12 @@ return {
       local function enable_codelens(bufnr)
         pcall(vim.lsp.codelens.refresh)
 
+        vim.api.nvim_clear_autocmds {
+          buffer = bufnr,
+          group = java_cmds,
+          event = 'BufWritePost',
+        }
+
         vim.api.nvim_create_autocmd('BufWritePost', {
           buffer = bufnr,
           group = java_cmds,
@@ -185,14 +193,21 @@ return {
         require('jdtls').setup_dap { hotcodereplace = 'auto' }
         require('jdtls.dap').setup_dap_main_class_configs()
 
-        local opts = { buffer = bufnr }
         -- Test execution (without debugging)
-        vim.keymap.set('n', '<leader>tc', "<cmd>lua require('jdtls').test_class()<cr>", opts)
-        vim.keymap.set('n', '<leader>tm', "<cmd>lua require('jdtls').test_nearest_method()<cr>", opts)
+        vim.keymap.set('n', '<leader>jtc', function()
+          require('jdtls').test_class()
+        end, { buffer = bufnr, desc = 'Java: Test class' })
+        vim.keymap.set('n', '<leader>jtm', function()
+          require('jdtls').test_nearest_method()
+        end, { buffer = bufnr, desc = 'Java: Test method' })
 
         -- Debug tests (with debugging enabled)
-        vim.keymap.set('n', '<leader>dc', "<cmd>lua require('jdtls').test_class({ config = { dap = true } })<cr>", opts)
-        vim.keymap.set('n', '<leader>dm', "<cmd>lua require('jdtls').test_nearest_method({ config = { dap = true } })<cr>", opts)
+        vim.keymap.set('n', '<leader>jdc', function()
+          require('jdtls').test_class { config = { dap = true } }
+        end, { buffer = bufnr, desc = 'Java: Debug test class' })
+        vim.keymap.set('n', '<leader>jdm', function()
+          require('jdtls').test_nearest_method { config = { dap = true } }
+        end, { buffer = bufnr, desc = 'Java: Debug test method' })
       end
 
       local function jdtls_on_attach(client, bufnr)
@@ -335,10 +350,10 @@ return {
               downloadSources = false,
             },
             implementationsCodeLens = {
-              enabled = true,
+              enabled = false,
             },
             referencesCodeLens = {
-              enabled = true,
+              enabled = false,
             },
             references = {
               includeDecompiledSources = true,

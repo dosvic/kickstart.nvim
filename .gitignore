@@ -5,4 +5,5 @@ nvim
 
 spell/
 .nvimlog
+nvim.log
 .pi
