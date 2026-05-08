@@ -233,6 +233,26 @@ return {
         vim.keymap.set('n', '<leader>pjp', "<cmd>lua require('jdtls').javap()<cr>", opts)
       end
 
+      local function find_root_dir(path)
+        local jdtls = require 'jdtls'
+
+        -- Prefer repository/build root for multi-module projects so sibling modules resolve.
+        local preferred_root = jdtls.setup.find_root({
+          'mvnw',
+          'gradlew',
+          'settings.gradle',
+          'settings.gradle.kts',
+          '.git',
+          'build.sbt',
+        }, path)
+
+        if preferred_root then
+          return preferred_root
+        end
+
+        return jdtls.setup.find_root(root_files, path)
+      end
+
       -- jdt:// buffers get filetype java so nvim-jdtls can decompile them, but they have no
       -- filesystem path - we must attach using an existing project's root (or cwd)
       local function root_dir_for_jdt_uri()
@@ -251,7 +271,7 @@ return {
         if fallback then
           return fallback
         end
-        return require('jdtls').setup.find_root(root_files, cwd .. '/.java')
+        return find_root_dir(cwd .. '/.java')
       end
 
       local function jdtls_setup(event)
@@ -279,7 +299,7 @@ return {
         elseif bufname:match '^%a[%w+.-]*://' then
           return
         else
-          root_dir = jdtls.setup.find_root(root_files, bufname)
+          root_dir = find_root_dir(bufname)
           if not root_dir then
             vim.notify('jdtls: no project root found for ' .. bufname, vim.log.levels.WARN)
             return
@@ -345,6 +365,10 @@ return {
             configuration = {
               updateBuildConfiguration = 'interactive',
               runtimes = path.runtimes,
+            },
+            -- Prevent background project builds on open/change
+            autobuild = {
+              enabled = false,
             },
             maven = {
               downloadSources = false,
